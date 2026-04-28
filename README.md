@@ -13,7 +13,7 @@
 
 ## KULLANIM KILAVUZU --- DİKKAT EDİLMESİ GEREKEN NOKTALAR
 1D VERİ YORUMLAYICI - NEDİR?
-Girilen N büyüklükte bir veri dizisi hakkında çeşitli yorumlar ve işlemleri yapmak için yazılmış, LLM destekli AI asistanı
+Girilen n büyüklükte bir veri dizisi hakkında çeşitli yorumlar ve işlemleri yapmak için yazılmış, LLM destekli AI asistanı
 Kullanım kılavuzu: Bir sayı dizisi seçtikten sonra F8 tuşuna basıldıktan sonra, çıkan seçeneklerden birini seçebilirsiniz.
 
 **Önemli not: Model, ondalık verileri okurken tam ve ondalık kısmının "." ile ayırt edilmesi gerekmektedir. Örnek olarak: 10.5, 6.7, 8.9
