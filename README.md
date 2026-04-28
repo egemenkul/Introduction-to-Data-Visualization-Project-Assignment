@@ -2,7 +2,6 @@
 
 <div align="center">
 
-### Sekilli Sukullu Ogrenci Baslangic Rehberi
 
 `Local AI + Cloud AI = Daha hizli ogrenme`
 
@@ -12,104 +11,61 @@
 
 </div>
 
-```text
- ____  ____     _   _ _____ _   _ _  __      _    ____ ___ _
-|  _ \|  _ \   | | | |  ___| | | | |/ /     / \  / ___|_ _| |
-| | | | |_) |  | | | | |_  | | | | ' /     / _ \ \___ \| || |
-| |_| |  _ <   | |_| |  _| | |_| | . \    / ___ \ ___) | || |___
-|____/|_| \_\   \___/|_|    \___/|_|\_\  /_/   \_\____/___|_____|
-K   K  L      U   U  BBBB   EEEEE         H   H   OOO    SSSS          GGG   EEEEE  L      DDDD   IIIII  N   N           !
-K  K   L      U   U  B   B  E             H   H  O   O  S             G      E      L      D   D    I    NN  N           !
-KKK    L      U   U  BBBB   EEE           HHHHH  O   O   SSS          G  GG  EEE    L      D   D    I    N N N           !
-K  K   L      U   U  B   B  E             H   H  O   O      S         G   G  E      L      D   D    I    N  NN
-K   K  LLLLL   UUU   BBBB   EEEEE         H   H   OOO   SSSS           GGG   EEEEE  LLLLL  DDDD   IIIII  N   N           !
-```
+## KULLANIM KILAVUZU --- DİKKAT EDİLMESİ GEREKEN NOKTALAR
+1D VERİ YORUMLAYICI - NEDİR?
+Girilen N büyüklükte bir veri dizisi hakkında çeşitli yorumlar ve işlemleri yapmak için yazılmış, LLM destekli AI asistanı
+Kullanım kılavuzu: Bir sayı dizisi seçtikten sonra F8 tuşuna basıldıktan sonra, çıkan seçeneklerden birini seçebilirsiniz.
 
-> [!IMPORTANT]
-> Gemini 3 preview "indirilen bir program" degil, Google Cloud Vertex AI uzerinden API ile kullanilan bir model ailesidir.
+**Önemli not: Model, ondalık verileri okurken tam ve ondalık kısmının "." ile ayırt edilmesi gerekmektedir. Örnek olarak: 10.5, 6.7, 8.9
+**Önemli not: Model, nokta karakteri hariç her şeyi ayırtıcı olarak algılar.
 
-## 0) Ogrenci Icin Tek Adim
+## KULLANILABİLECEK SEÇENEKLER
+1. TREND YORUMU:
+LLM, verinin zaman içindeki değişimine göre verinin trendi, düzeni ve istikrarı hakkında teknik olmayan bilgiler verir.
+-----------------------
+2. ANOMALİ TESPİTİ:
+LLM, veri ve verinin istatistiksel özellikleri (Ortalama, Standart Sapma) kullanılarak veri dizisi içindeki anormal verileri tespit eder.
+-----------------------
+3. YAPAY VERİ ÜRETİMİ:
+LLM, veri ve verinin istatistiksel özelliklerini kullanarak veri dizisinin trendine uygun şekilde sentetik veri üretir. Üretilen veri sayısı 20'dir.
+-----------------------
+4. CSV DÖNÜŞTÜRME KODU:
+LLM, girilen veriyi bilgisayarınızda CSV formatında bir dosya olarak kaydetmeniz için çalıştırmanız gereken bir script yazar. 
+Gelecek güncellemelerde asistan dosyayı otomatik olarak kaydedecektir.
+-----------------------
+5. VERİ HİKAYESİ:
+LLM, girilen veriyi yorumlar. Ani değişimler durumunda sensör veya bir sunucudan gelen verilerden kaynağın mı hatalı olduğunu, yoksa ani değişimlerin gerçek
+değişim mi olduğu hakkında yorum yapar.
+-----------------------
+6. HİPOTEZ ÖNERİSİ:
+LLM, verinin yapısına göre kullanmamız için bir istatistik testi önerisinde bulunur.
+-----------------------
+7. KISA RAPOR SEÇENEĞİ:
+LLM, veri hakkında teknik bilgisi olmayan okuyucuların anlayabileceği şekilde kısa bir metin yazar.
+-----------------------
 
-1. Ollama'yi bir kez kur: https://docs.ollama.com/windows models kısmına gir https://ollama.com/library  ve gemini 3 preview cloud modelinini çalıştır yetki giriş gerekecek. ollama artık lokalinde bir LLM olarak sana hizmet vermeye hazır .
+## Dependencies (Bağlılıklar):
+requests
+pyperclip
+pynput
+pyautogui
+sympy
+Pillow
+PyMuPDF
+re
+NumPy
+MatplotLib
 
-2. Bu klasorde sadece `BASLAT.bat` calistir.
-3. Hepsi bu kadar.
+## Planlanan Güncellemeler:
+1. CSV üretim scriptinin otonom çalışımı:
+Bu güncellemenin hedefi, LLM tarafından üretilen scriptin kullanıcı dahil olmadan çalıştırılıp, dosyanın kaydedilmesi olacaktır.
 
-> [!IMPORTANT]
-> Ogrenci tarafinda ekstra komut gerekmez. `BASLAT.bat` gerekli durumda `kurulum.bat` dosyasini otomatik cagirir ve ortami kendi kurar.
+2. Grafik oluşturma seçenekleri:
+Bu güncellemenin hedefi, verinin hedefine uygun olan bir grafik türü ile veriyi görselleştirmek olacaktır.
 
-## 1) BASLAT Calisinca Ne Oluyor?
+3. LLM'e verilen istatistiksel bilgilerin arttırılması:
+İlk versiyonu LLM'e sadece standart sapma ve ortalama bilgilerini sunar. Bu istatistiksel bilgilerin arttırılması (örn. Z-Score) asistanın daha iyi performans göstermesini sağlayacaktır.
 
-1. `BASLAT.bat` önce `.venv` var mi kontrol eder.
-2. Yoksa `kurulum.bat` otomatik calisir; Python 3 kontrolu, `.venv` olusturma, `pip` guncelleme ve `requirements.txt` paket kurulumu yapilir.
-3. Sonra `main.pyw` arka planda acilir.
-4. Uygulama varsayilan olarak `gemma3:1b` modeliyle Ollama'ya istek atar.
-
-Ollama API varsayilan adresi: `http://localhost:11434`
-
-## 2) Google Cloud Gemini 3 Preview (Vertex AI)
-
-### Once gerekli olanlar
-- Google Cloud projesi
-- Billing acik olmali
-- Vertex AI API aktif olmali
-- `gcloud` CLI kurulu olmali
-
-### gcloud giris ve kimlik
-
-```powershell
-gcloud init
-gcloud auth application-default login
-```
-
-### Proje ve API ayari
-
-```powershell
-gcloud config set project YOUR_PROJECT_ID
-gcloud services enable aiplatform.googleapis.com
-```
-
-### Python SDK kurulumu
-
-```powershell
-pip install --upgrade google-genai
-```
-
-### Ortam degiskenleri (PowerShell)
-
-```powershell
-$env:GOOGLE_CLOUD_PROJECT="YOUR_PROJECT_ID"
-$env:GOOGLE_CLOUD_LOCATION="global"
-$env:GOOGLE_GENAI_USE_VERTEXAI="True"
-```
-
-### Ilk Gemini 3 Preview istegi
-
-```python
-from google import genai
-
-client = genai.Client()
-
-response = client.models.generate_content(
-    model="gemini-3-flash-preview",
-    contents="Merhaba! Bana 3 maddede Python'da for dongusunu anlat.",
-)
-
-print(response.text)
-```
-
-
-## 3) Mini Ogrenci Challenge (Opsiyonel)
-1. Terminalde su komutu yaz: `ollama run gemini-3-flash-preview`
-2. Sonra Ollama'da gecerli bir modelle sor: `ollama run gemma3:1b`
-3. Ayni soruyu Gemini 3 preview ile sor.
-4. Cevaplari hiz, detay ve dogruluk acisindan karsilastir.
-
-## 4) Hata Cozme Kisa Notlari
-- `403` alirsan: Billing, Vertex AI API ve IAM rol (`roles/aiplatform.user`) kontrol et.
-- `401` alirsan: `gcloud auth application-default login` komutunu yeniden calistir.
-- `ollama model not found` alirsan once su komutu calistir: `ollama run gemma3:1b`
-- `Model not found` alirsan: model ID'yi kontrol et (`gemini-3-flash-preview`, `gemini-3-pro-preview`, `gemini-3.1-pro-preview`).
 
 ## Kaynaklar (Resmi)
 - Ollama Quickstart: https://docs.ollama.com/quickstart
