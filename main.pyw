@@ -7,7 +7,8 @@ import time
 import threading
 import requests
 import queue
-
+import re
+import numpy as np
 
 # --- AYARLAR ---
 OLLAMA_URL = "http://localhost:11434/api/generate"
@@ -28,25 +29,41 @@ kisayol_basildi = False
 
 # --- MENÜ SEÇENEKLERİ VE PROMPT'LAR ---
 ISLEMLER = {
-    "📝 Gramer Düzelt": "Bu metni Türkçe yazım ve dil bilgisi kurallarına göre düzelt, resmi ve akıcı olsun. Sadece sonucu ver.",
-    "🇬🇧 İngilizceye Çevir": "Bu metni İngilizceye çevir. Sadece çeviriyi ver.",
-    "🇹🇷 Türkçeye Çevir": "Bu metni Türkçeye çevir. Sadece çeviriyi ver.",
-    "📑 Özetle (Madde Madde)": "Bu metni analiz et ve en önemli noktaları madde madde özetle.",
-    "💼 Daha Resmi Yap": "Bu metni kurumsal bir e-posta diline çevir, çok resmi olsun.",
-    "🐍 Python Koduna Çevir": "Bu metindeki isteği yerine getiren bir Python kodu yaz. Sadece kodu ver.",
-    "📧 Cevap Yaz (Mail)": "Bu gelen bir e-posta, buna kibar ve profesyonel bir cevap metni taslağı yaz.",
-    "🎮 PS5 Oyun Skor + Acımasız Yorum": (
-        "Seçili metni bir PS5 oyunu adı olarak ele al. Aşağıdaki formatta Türkçe cevap ver:\n"
-        "1) Oyun: <ad>\n"
-        "2) Topluluk Beğeni Skorları:\n"
-        "- Metacritic User Score: <değer veya 'bilgi yok'>\n"
-        "- OpenCritic / benzer eleştirmen ortalaması: <değer veya 'bilgi yok'>\n"
-        "- Oyuncu yorumu ortalaması (PS Store vb.): <değer veya 'bilgi yok'>\n"
-        "3) Hüküm: sadece 'IYI' veya 'KOTU'\n"
-        "4) Acımasız Yorum: 2-4 cümle, net ve sert.\n"
-        "Kurallar: Kesin bilmediğin puanı uydurma, onun yerine 'bilgi yok' yaz. "
-        "Yorumu skorlarla tutarlı kur."
+    "📈 Trend Yorumu": (
+        "Aşağıdaki veriyi istatistiksel olarak analiz et ve trend yorumu yap. "
+        "Verinin genel eğilimini, artış/azalış örüntülerini ve dikkat çekici noktaları belirt."
+        "Cevabın kısa ve öz olsun, gereksiz açıklama ekleme."
     ),
+    "🔍 Anomali Tespiti": (
+        "Aşağıdaki veriyi incele ve anomalileri tespit et. "
+        "Hangi değerlerin anormal olduğunu ve neden anormal sayıldığını açıkla. "
+        "IQR veya standart sapma yöntemini kullanarak değerlendir."
+        "Cevabın kısa ve öz olsun, gereksiz açıklama ekleme."
+        
+    ),
+    "🎲 Yapay Veri Üret": (
+        "Aşağıdaki verinin istatistiksel özelliklerine (ortalama, standart sapma, dağılım) "
+        "uygun 20 adet yapay veri üret. Sadece sayıları virgülle ayırarak ver, başka açıklama ekleme."
+        "Cevabın kısa ve öz olsun, gereksiz açıklama ekleme."
+    ),
+    "📊 CSV'ye Dönüştür": (
+        "Aşağıdaki veriyi pandas kullanarak CSV formatına dönüştüren Python kodu yaz. "
+        "Kodu çalıştırılabilir şekilde ver, sadece kodu yaz."
+    ),
+    "📚 Veri Hikayesi": (
+        "Aşağıdaki veriyi bir time series olarak yorumla. Veri noktaları arasındaki ilişki hakkında yorum yap,"
+        "veri noktaları arasındaki farkın sensör kalitesi gibi etkenlerden mi etkilendiği hakkında yorum yap."
+        "Daha isabetli yorumlar için verilen istatistiksel verilerden yararlan"
+        "Cevabın kısa ve öz olsun, gereksiz açıklamalar ekleme."
+    ),
+    "📝 Hipotez Önerisi": (
+        "Aşağıdaki veri ve istatistikleri kullanarak veriyi anlamamıza faydalı olacak istatistiki testler öner"
+        "Öneride bulunduğun test hakkında kısa ama öz bir neden sun. Nedenin kısa ve öz olsun."
+    ),
+    "✍ Kısa Rapor": (
+        "Veriyi ve verinin istatistik bilgilerini kullanarak, teknik olmayan bir okuyucuya yönelik veri hakkında bilgi ver."
+        "Cevabın kısa ve öz olsun."
+    )
 }
 
 
@@ -79,6 +96,26 @@ def get_available_text_model():
 
     return MODEL_ADI
 
+def markdown_temizle(metin: str) -> str:
+    metin = re.sub(r'\*\*(.*?)\*\*', r'\1', metin)  # **bold**
+    metin = re.sub(r'\*(.*?)\*', r'\1', metin)       # *italic*
+    metin = re.sub(r'#{1,6}\s*', '', metin)           # # Başlıklar
+    metin = re.sub(r'`{1,3}(.*?)`{1,3}', r'\1', metin, flags=re.DOTALL)  # `kod`
+    return metin.strip() # Gemini cevapları yazarken markdown kullanır, bunları silerek daha okunaklı yazılar oluşturulur.
+
+def clipboard_to_data():
+    # 1. Clipboard'dan veriyi al
+    raw_data = pyperclip.paste()
+    
+    # 2. Sanitizasyon (Sadece sayıları, noktaları ve eksileri yakala)
+    # Regex açıklaması: -? (negatif olabilir), \d* (rakamlar), \.? (opsiyonel ondalık), \d+ (rakamlar)
+    numbers = re.findall(r'-?\d*\.?\d+', raw_data)
+    
+    # 3. String'den Float'a dönüştür
+    data_list = [float(n) for n in numbers]
+    
+    # 4. Numpy Array'e çevir (İstatistiksel işler için en ideali budur)
+    return np.array(data_list)
 
 def ollama_cevap_al(prompt):
     """Ollama API'den cevap al."""
@@ -155,7 +192,7 @@ def secili_metni_kopyala(max_deneme=4):
 
 
 def pencere_modunda_gosterilsin_mi(komut_adi):
-    return "PS5 Oyun Skor" in komut_adi
+    return True
 
 
 def sonuc_penceresi_goster(baslik, icerik):
@@ -224,8 +261,17 @@ def sonuc_penceresi_goster(baslik, icerik):
 
 
 def islemi_yap(komut_adi, secili_metin):
+
+    veri = clipboard_to_data()
+    ortalama = np.mean(veri)
+    std = np.std(veri)
     prompt_emri = ISLEMLER[komut_adi]
-    full_prompt = f"{prompt_emri}:\n\n'{secili_metin}'"
+    full_prompt = (
+        f"{prompt_emri}\n\n"
+        f"Veri: {veri.tolist()}\n"
+        f"Ortalama: {ortalama:.4f}\n"
+        f"Standart Sapma: {std:.4f}"
+    )
 
     print(f"🤖 İşlem: {komut_adi}")
     print("⏳ Ollama ile işleniyor...")
@@ -236,6 +282,7 @@ def islemi_yap(komut_adi, secili_metin):
         return
 
     sonuc = strip_code_fence(sonuc)
+    sonuc = markdown_temizle(sonuc)
     if sonuc.startswith("'") and sonuc.endswith("'"):
         sonuc = sonuc[1:-1]
 
