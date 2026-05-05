@@ -16,11 +16,11 @@
 
 ### Trend Yorumu Çıktısı
 **Girdi:** `11, 21, 43, 66, 89`
-![Trend Yorumu]!(screenshots/trendyorumu.png)
+[Trend Yorumu]!(screenshots/trendyorumu.png)
 
 ### Yapay veri ürettirme Çıktısı
 **Girdi:** `11, 21, 43, 66, 89`
-![Anomali]!(screenshots/yapayveri.png)
+[Anomali]!(screenshots/yapayveri.png)
 
 ### Hipotez önerisi Çıktısı
 **Girdi:** `11, 21, 43, 66, 89`
