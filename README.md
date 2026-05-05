@@ -12,19 +12,19 @@
 ## Örnek Kullanım
 
 ### F8 Menüsü
-[F8 Menüsü]!(screenshots/menu.png)
+![F8 Menüsü](screenshots/menu.png)
 
 ### Trend Yorumu Çıktısı
 **Girdi:** `11, 21, 43, 66, 89`
-[Trend Yorumu]!(screenshots/trendyorumu.png)
+![Trend Yorumu](screenshots/trendyorumu.png)
 
 ### Yapay veri ürettirme Çıktısı
 **Girdi:** `11, 21, 43, 66, 89`
-[Anomali]!(screenshots/yapayveri.png)
+![Anomali](screenshots/yapayveri.png)
 
 ### Hipotez önerisi Çıktısı
 **Girdi:** `11, 21, 43, 66, 89`
-[Önerilen Testler]!(screenshots/öneri.png)
+![Önerilen Testler](screenshots/öneri.png)
 
 </div>
 
