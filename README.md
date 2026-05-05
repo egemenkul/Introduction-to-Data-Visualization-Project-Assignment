@@ -9,6 +9,23 @@
 [![Gemini 3 Preview](https://img.shields.io/badge/Gemini%203-Preview-0f766e?style=for-the-badge)](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/start/get-started-with-gemini-3)
 [![Google Cloud](https://img.shields.io/badge/Google%20Cloud-Vertex%20AI-1a73e8?style=for-the-badge)](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/start/quickstart)
 
+## Örnek Kullanım
+
+### F8 Menüsü
+![F8 Menüsü](screenshots/menu.png)
+
+### Trend Yorumu Çıktısı
+**Girdi:** `11, 21, 43, 66, 89`
+![Trend Yorumu](screenshots/trendyorumu.png)
+
+### Yapay veri ürettirme Çıktısı
+**Girdi:** `11, 21, 43, 66, 89`
+![Anomali](screenshots/yapayveri.png)
+
+### Hipotez önerisi Çıktısı
+**Girdi:** `11, 21, 43, 66, 89`
+![Anomali](screenshots/öneri.png)
+
 </div>
 
 ## KULLANIM KILAVUZU --- DİKKAT EDİLMESİ GEREKEN NOKTALAR
